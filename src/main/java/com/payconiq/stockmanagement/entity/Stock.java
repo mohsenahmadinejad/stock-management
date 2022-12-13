@@ -23,4 +23,8 @@ public class Stock extends Auditable<String> {
     private String name;
     private BigDecimal currentPrice;
 
+    public Stock(String name, BigDecimal currentPrice) {
+        this.name = name;
+        this.currentPrice = currentPrice;
+    }
 }

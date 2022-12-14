@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
- public class StockDto {
+ public class ResStockDto {
 
     private Long id;
     private String name;

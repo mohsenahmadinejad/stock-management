@@ -1,9 +1,11 @@
 package com.payconiq.stockmanagement.controller;
 
 
-import com.payconiq.stockmanagement.dto.StockDto;
+import com.payconiq.stockmanagement.dto.ReqStockDto;
+import com.payconiq.stockmanagement.dto.ResStockDto;
 import com.payconiq.stockmanagement.entity.Stock;
 import com.payconiq.stockmanagement.service.StockService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,25 @@ public class StockController {
     public ResponseEntity<Stock> getBoardById(@PathVariable Long id) {
         return ResponseEntity.ok(stockService.getStockById(id));
     }
-    @PostMapping
-    public ResponseEntity<Long> addStock(@RequestBody StockDto stockDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(stockService.addStock(stockDto));
+
+//    @ApiOperation(value = "Add a Stock", response = Long.class)
+//    @PostMapping
+//    public ResponseEntity<Long> addStock(@RequestBody ReqStockDto reqStockDto) {
+//        return ResponseEntity.status(HttpStatus.CREATED).body(stockService.addStock(reqStockDto));
+//    }
+
+    @ApiOperation(value = "Update price of stock", response = Long.class)
+    @PatchMapping("/{id}")
+    public ResponseEntity<ResStockDto> updateStockPrice1(@PathVariable Long id,
+                                                        @RequestBody ReqStockDto stockDto) {
+        return ResponseEntity.status(HttpStatus.OK).body(stockService.updateStockPrice(id,stockDto));
     }
+
+//    @PostMapping("/{stockId}")
+//    public ResponseEntity<ResStockDto> updateStockPrice( @RequestBody ReqStockDto stockDto) {
+//        System.out.println(stockDto.toString());
+////        return ResponseEntity.status(HttpStatus.OK).body(stockService.updateStockPrice(id,stockDto));
+//        return null;
+//    }
+
 }

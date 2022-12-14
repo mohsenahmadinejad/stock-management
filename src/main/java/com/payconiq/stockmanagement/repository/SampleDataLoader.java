@@ -32,9 +32,9 @@ public class SampleDataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Loading Sample Data...");
 
-        List<Stock> stockList= IntStream.rangeClosed(1,100)
-                .mapToObj(i-> new Stock(faker.stock().nsdqSymbol(),new BigDecimal(new Random().nextInt(1000)))
-                ).collect(Collectors.toList());
-        stockRepository.saveAll(stockList);
+//        List<Stock> stockList= IntStream.rangeClosed(1,100)
+//                .mapToObj(i-> new Stock(faker.stock().nsdqSymbol(),new BigDecimal(new Random().nextInt(1000)))
+//                ).collect(Collectors.toList());
+//        stockRepository.saveAll(stockList);
     }
 }

@@ -2,7 +2,8 @@ package com.payconiq.stockmanagement.service;
 
 
 
-import com.payconiq.stockmanagement.dto.StockDto;
+import com.payconiq.stockmanagement.dto.ReqStockDto;
+import com.payconiq.stockmanagement.dto.ResStockDto;
 import com.payconiq.stockmanagement.entity.Stock;
 import com.payconiq.stockmanagement.repository.StockRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +28,25 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Long addStock(StockDto stockDto) {
+    public Long addStock(ReqStockDto reqStockDto) {
         Stock stock=new Stock();
-        stock= modelMapper.map(stockDto,Stock.class);
+        stock= modelMapper.map(reqStockDto,Stock.class);
         log.info("Stock added : "+  stock.toString());
 
         return stockRepository.save(stock).getId();
+    }
+
+    @Override
+    public ResStockDto updateStockPrice(Long id ,ReqStockDto reqStockDto) {
+        Stock savedStock =stockRepository.findById(id)
+                .orElseThrow(()->new RuntimeException(
+                        String.format("Can not find Stock by id %s",reqStockDto.getId())
+                ));
+        log.info("The price of stock by id: {}  updated from: {} to: {} ",
+                savedStock.getId(),
+                savedStock.getCurrentPrice(),
+                reqStockDto.getCurrentPrice());
+        savedStock.setCurrentPrice(reqStockDto.getCurrentPrice());
+        return modelMapper.map(stockRepository.save(savedStock),ResStockDto.class);
     }
 }

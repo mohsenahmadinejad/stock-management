@@ -7,6 +7,7 @@ import com.payconiq.stockmanagement.entity.Stock;
 import com.payconiq.stockmanagement.service.StockService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,28 +21,33 @@ public class StockController {
     private StockService stockService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Stock> getBoardById(@PathVariable Long id) {
+    public ResponseEntity<Stock> getStockById(@PathVariable Long id) {
         return ResponseEntity.ok(stockService.getStockById(id));
     }
 
-//    @ApiOperation(value = "Add a Stock", response = Long.class)
-//    @PostMapping
-//    public ResponseEntity<Long> addStock(@RequestBody ReqStockDto reqStockDto) {
-//        return ResponseEntity.status(HttpStatus.CREATED).body(stockService.addStock(reqStockDto));
-//    }
+    @GetMapping("/pagination/{pageNumber}/{pageSize}")
+    public ResponseEntity<Page<Stock>> getAllBoards(@PathVariable int pageNumber,
+                                                    @PathVariable int pageSize) {
+        return ResponseEntity.ok(stockService.getAllStocksWithPagination(pageNumber,pageSize));
+    }
+
+    @ApiOperation(value = "Add a Stock", response = Long.class)
+    @PostMapping
+    public ResponseEntity<Long> addStock(@RequestBody ReqStockDto reqStockDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(stockService.addStock(reqStockDto));
+    }
 
     @ApiOperation(value = "Update price of stock", response = Long.class)
     @PatchMapping("/{id}")
-    public ResponseEntity<ResStockDto> updateStockPrice1(@PathVariable Long id,
+    public ResponseEntity<ResStockDto> updateStockPrice(@PathVariable Long id,
                                                         @RequestBody ReqStockDto stockDto) {
         return ResponseEntity.status(HttpStatus.OK).body(stockService.updateStockPrice(id,stockDto));
     }
 
-//    @PostMapping("/{stockId}")
-//    public ResponseEntity<ResStockDto> updateStockPrice( @RequestBody ReqStockDto stockDto) {
-//        System.out.println(stockDto.toString());
-////        return ResponseEntity.status(HttpStatus.OK).body(stockService.updateStockPrice(id,stockDto));
-//        return null;
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteStock(@PathVariable Long id) {
+        stockService.deleteBoard(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }

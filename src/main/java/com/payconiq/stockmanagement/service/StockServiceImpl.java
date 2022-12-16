@@ -5,11 +5,16 @@ package com.payconiq.stockmanagement.service;
 import com.payconiq.stockmanagement.dto.ReqStockDto;
 import com.payconiq.stockmanagement.dto.ResStockDto;
 import com.payconiq.stockmanagement.entity.Stock;
+import com.payconiq.stockmanagement.exception.StockNotFoundException;
 import com.payconiq.stockmanagement.repository.StockRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -24,7 +29,12 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Stock getStockById(Long id) {
-        return stockRepository.findById(id).get();
+        return stockRepository.findById(id)  .get();
+    }
+
+    @Override
+    public Page<Stock> getAllStocksWithPagination(int pageNumber , int pageSize) {
+        return stockRepository.findAll(PageRequest.of(pageNumber, pageSize));
     }
 
     @Override
@@ -38,10 +48,12 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public ResStockDto updateStockPrice(Long id ,ReqStockDto reqStockDto) {
+
         Stock savedStock =stockRepository.findById(id)
-                .orElseThrow(()->new RuntimeException(
+                .orElseThrow(()->new StockNotFoundException(
                         String.format("Can not find Stock by id %s",reqStockDto.getId())
                 ));
+
         log.info("The price of stock by id: {}  updated from: {} to: {} ",
                 savedStock.getId(),
                 savedStock.getCurrentPrice(),
@@ -49,4 +61,11 @@ public class StockServiceImpl implements StockService {
         savedStock.setCurrentPrice(reqStockDto.getCurrentPrice());
         return modelMapper.map(stockRepository.save(savedStock),ResStockDto.class);
     }
+
+    @Override
+    public void deleteBoard(Long id) {
+        log.info("Stock by id: {} deleted...",id);
+        stockRepository.deleteById(id);
+    }
+
 }

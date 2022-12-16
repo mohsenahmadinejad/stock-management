@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.payconiq.stockmanagement.entity.Stock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -28,13 +29,24 @@ public class SampleDataLoader implements CommandLineRunner {
     @Autowired
     private Faker faker;
 
+    @Value("${database.stock-table.create-sample-data.status}")
+    private String createSampleDataStatus;
+
+    @Value("${database.stock-table.create-sample-data.row-count}")
+    private String createSampleDataRowCount;
+
+
     @Override
     public void run(String... args) throws Exception {
+        if (createSampleDataStatus.equalsIgnoreCase("off")){
+            return;
+        }
+
         log.info("Loading Sample Data...");
 
-//        List<Stock> stockList= IntStream.rangeClosed(1,100)
-//                .mapToObj(i-> new Stock(faker.stock().nsdqSymbol(),new BigDecimal(new Random().nextInt(1000)))
-//                ).collect(Collectors.toList());
-//        stockRepository.saveAll(stockList);
+        List<Stock> stockList= IntStream.rangeClosed(1,Integer.parseInt(createSampleDataRowCount))
+                .mapToObj(i-> new Stock(faker.stock().nsdqSymbol(),new BigDecimal(new Random().nextInt(1000)))
+                ).collect(Collectors.toList());
+        stockRepository.saveAll(stockList);
     }
 }

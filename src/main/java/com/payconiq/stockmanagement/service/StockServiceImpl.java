@@ -29,7 +29,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Stock getStockById(Long id) {
-        return stockRepository.findById(id)  .get();
+        return stockRepository.findById(id).get();
     }
 
     @Override
@@ -66,6 +66,11 @@ public class StockServiceImpl implements StockService {
     public void deleteBoard(Long id) {
         log.info("Stock by id: {} deleted...",id);
         stockRepository.deleteById(id);
+    }
+
+    @Override
+    public Stock getStockByName(String name) {
+        return stockRepository.findByName(name);
     }
 
 }

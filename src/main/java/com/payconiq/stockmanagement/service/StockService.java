@@ -17,4 +17,5 @@ public interface StockService {
     ResStockDto updateStockPrice(Long id ,ReqStockDto reqStockDto);
     void deleteBoard(Long id);
 
+    Stock getStockByName(String name);
 }

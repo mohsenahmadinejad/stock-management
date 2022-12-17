@@ -24,7 +24,10 @@ public class StockController {
     public ResponseEntity<Stock> getStockById(@PathVariable Long id) {
         return ResponseEntity.ok(stockService.getStockById(id));
     }
-
+    @GetMapping("/{name}")
+    public ResponseEntity<Stock> getStockByName(@PathVariable String name) {
+        return ResponseEntity.ok(stockService.getStockByName(name));
+    }
     @GetMapping("/pagination/{pageNumber}/{pageSize}")
     public ResponseEntity<Page<Stock>> getAllBoards(@PathVariable int pageNumber,
                                                     @PathVariable int pageSize) {

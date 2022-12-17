@@ -1,6 +1,8 @@
 package com.payconiq.stockmanagement.repository;
 
 import com.payconiq.stockmanagement.entity.Stock;
+import com.payconiq.stockmanagement.entity.StockPriceHistory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,14 +24,13 @@ import java.util.stream.IntStream;
 
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class StockRepositoryTest {
 
     @Autowired
     private StockRepository stockRepository;
 
-
     void initData(int rowCount){
+
         stockRepository.deleteAll();
         List<Stock> stockList= IntStream.rangeClosed(1,rowCount)
                 .mapToObj(i-> new Stock("Stock"+i,new BigDecimal(new Random().nextInt(1000)))
@@ -37,15 +38,27 @@ class StockRepositoryTest {
         stockRepository.saveAll(stockList);
     }
 
-    @Test
-    @DisplayName("It should save the movie into the database")
-    void whenSaveStock_thenReturnSavedStock(){
-        Stock stock=Stock.builder().
+    private Stock stock1;
+    private Stock stock2;
+
+    @BeforeEach
+    void setUp(){
+        stock1=Stock.builder().
                 name("Stock1").
-                currentPrice(new BigDecimal(100)).
+                currentPrice(new BigDecimal(101)).
                 build();
 
-        Stock savedStock= stockRepository.save(stock);
+        stock2=Stock.builder().
+                name("Stock2").
+                currentPrice(new BigDecimal(102)).
+                build();
+    }
+
+    @Test
+    @DisplayName("It should save the stock into the database")
+    void whenSaveStock_thenReturnSavedStock(){
+
+        Stock savedStock= stockRepository.save(stock1);
         assertNotNull(savedStock);
         assertThat(savedStock.getId()).isNotEqualTo(null);
 
@@ -71,15 +84,6 @@ class StockRepositoryTest {
 
     @Test
     void whenGetStocksById_thenReturnTheStock(){
-        Stock stock1=Stock.builder().
-                name("Stock1").
-                currentPrice(new BigDecimal(101)).
-                build();
-
-        Stock stock2=Stock.builder().
-                name("Stock2").
-                currentPrice(new BigDecimal(102)).
-                build();
 
         Stock savedStock1=stockRepository.save(stock1);
         Stock savedStock2=stockRepository.save(stock2);
@@ -97,32 +101,18 @@ class StockRepositoryTest {
 
     @Test
     void whenUpdateStock_thenReturnUpdatedStock(){
-        Stock stock=Stock.builder().
-                name("Stock1").
-                currentPrice(new BigDecimal(100)).
-                build();
-        stockRepository.save(stock);
-
-        Stock savedStock=stockRepository.findById(stock.getId()).get();
-        savedStock.setCurrentPrice(new BigDecimal(101));
+        stockRepository.save(stock1);
+        Stock savedStock=stockRepository.findById(stock1.getId()).get();
+        savedStock.setCurrentPrice(new BigDecimal(200));
         Stock updatedStock= stockRepository.save(savedStock);
 
-        assertEquals(updatedStock.getCurrentPrice(),new BigDecimal(101));
+        assertEquals(updatedStock.getCurrentPrice(),new BigDecimal(200));
 
     }
 
     @Test
     void whenDeleteStock_thenTheStockeShouldBeDeleted(){
         stockRepository.deleteAll();
-        Stock stock1=Stock.builder().
-                name("Stock1").
-                currentPrice(new BigDecimal(101)).
-                build();
-
-        Stock stock2=Stock.builder().
-                name("Stock2").
-                currentPrice(new BigDecimal(102)).
-                build();
 
         stockRepository.save(stock1);
         stockRepository.save(stock2);
@@ -137,15 +127,6 @@ class StockRepositoryTest {
     }
     @Test
     void whenGetStocksByName_thenReturnTheStock(){
-        Stock stock1=Stock.builder().
-                name("Stock1").
-                currentPrice(new BigDecimal(101)).
-                build();
-
-        Stock stock2=Stock.builder().
-                name("Stock2").
-                currentPrice(new BigDecimal(102)).
-                build();
 
         stockRepository.save(stock1);
         stockRepository.save(stock2);

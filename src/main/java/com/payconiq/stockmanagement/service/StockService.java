@@ -13,7 +13,7 @@ import java.util.List;
 public interface StockService {
     Stock getStockById(Long id);
     Page<Stock> getAllStocksWithPagination(int pageNumber , int pageSize);
-    Long addStock(ReqStockDto stockDto);
+    Stock addStock(ReqStockDto stockDto);
     ResStockDto updateStockPrice(Long id ,ReqStockDto reqStockDto);
     void deleteBoard(Long id);
 

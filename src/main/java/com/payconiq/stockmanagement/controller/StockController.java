@@ -37,7 +37,7 @@ public class StockController {
     @ApiOperation(value = "Add a Stock", response = Long.class)
     @PostMapping
     public ResponseEntity<Long> addStock(@RequestBody ReqStockDto reqStockDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(stockService.addStock(reqStockDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(stockService.addStock(reqStockDto).getId());
     }
 
     @ApiOperation(value = "Update price of stock", response = Long.class)

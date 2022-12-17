@@ -11,4 +11,8 @@ import java.math.BigDecimal;
     private String name;
     private BigDecimal currentPrice;
 
+    public ResStockDto(String name, BigDecimal currentPrice) {
+        this.name = name;
+        this.currentPrice = currentPrice;
+    }
 }

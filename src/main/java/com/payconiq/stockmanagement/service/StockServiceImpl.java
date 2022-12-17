@@ -16,9 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Service
 @Slf4j
@@ -28,14 +25,17 @@ public class StockServiceImpl implements StockService {
     private StockRepository stockRepository;
 
     @Autowired
-    private StockPriceHistoryRepository stockPriceHistoryRepository;
+    private StockPriceHistoryService stockPriceHistoryService ;
+
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
     public Stock getStockById(Long id) {
-        return stockRepository.findById(id).get();
+        return stockRepository.findById(id).orElseThrow(()->new StockNotFoundException(
+                String.format("Can not find Stock by id %s",id)
+        ));
     }
 
     @Override
@@ -44,14 +44,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public Long addStock(ReqStockDto reqStockDto) {
+    public Stock addStock(ReqStockDto reqStockDto) {
         Stock stock=new Stock();
         stock= modelMapper.map(reqStockDto,Stock.class);
         log.info("Stock added : "+  stock.toString());
 
         stockRepository.save(stock).getId();
-        addToStockPriceHistory(stock);
-        return stock.getId();
+        stockPriceHistoryService.saveToStockPriceHistory(stock);
+        return stock;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class StockServiceImpl implements StockService {
                 reqStockDto.getCurrentPrice());
 
         savedStock.setCurrentPrice(reqStockDto.getCurrentPrice());
-        addToStockPriceHistory(savedStock);
+        stockPriceHistoryService.saveToStockPriceHistory(savedStock);
         return modelMapper.map(stockRepository.save(savedStock),ResStockDto.class);
     }
 
@@ -83,8 +83,6 @@ public class StockServiceImpl implements StockService {
         return stockRepository.findByName(name);
     }
 
-    private StockPriceHistory addToStockPriceHistory(Stock stock){
-        return stockPriceHistoryRepository.save(new StockPriceHistory(stock.getCurrentPrice(),stock));
-    }
+
 
 }

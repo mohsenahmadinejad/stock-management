@@ -5,7 +5,9 @@ package com.payconiq.stockmanagement.service;
 import com.payconiq.stockmanagement.dto.ReqStockDto;
 import com.payconiq.stockmanagement.dto.ResStockDto;
 import com.payconiq.stockmanagement.entity.Stock;
+import com.payconiq.stockmanagement.entity.StockPriceHistory;
 import com.payconiq.stockmanagement.exception.StockNotFoundException;
+import com.payconiq.stockmanagement.repository.StockPriceHistoryRepository;
 import com.payconiq.stockmanagement.repository.StockRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +26,9 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     private StockRepository stockRepository;
+
+    @Autowired
+    private StockPriceHistoryRepository stockPriceHistoryRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -43,7 +49,9 @@ public class StockServiceImpl implements StockService {
         stock= modelMapper.map(reqStockDto,Stock.class);
         log.info("Stock added : "+  stock.toString());
 
-        return stockRepository.save(stock).getId();
+        stockRepository.save(stock).getId();
+        addToStockPriceHistory(stock);
+        return stock.getId();
     }
 
     @Override
@@ -58,7 +66,9 @@ public class StockServiceImpl implements StockService {
                 savedStock.getId(),
                 savedStock.getCurrentPrice(),
                 reqStockDto.getCurrentPrice());
+
         savedStock.setCurrentPrice(reqStockDto.getCurrentPrice());
+        addToStockPriceHistory(savedStock);
         return modelMapper.map(stockRepository.save(savedStock),ResStockDto.class);
     }
 
@@ -71,6 +81,10 @@ public class StockServiceImpl implements StockService {
     @Override
     public Stock getStockByName(String name) {
         return stockRepository.findByName(name);
+    }
+
+    private StockPriceHistory addToStockPriceHistory(Stock stock){
+        return stockPriceHistoryRepository.save(new StockPriceHistory(stock.getCurrentPrice(),stock));
     }
 
 }

@@ -10,7 +10,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
 
-        String  username ="root";
+        String  username ="anonymous_user";
         return Optional.of( username);
     }
 }

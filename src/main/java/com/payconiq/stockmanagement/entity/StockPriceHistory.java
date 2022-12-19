@@ -1,5 +1,6 @@
 package com.payconiq.stockmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,7 @@ public class StockPriceHistory extends  Auditable<String> {
 
     @ManyToOne
     @JoinColumn(name = "FK_STOCK_ID",referencedColumnName ="ID" )
+    @JsonBackReference
     private Stock stock;
 
     public StockPriceHistory(BigDecimal price, Stock stock) {

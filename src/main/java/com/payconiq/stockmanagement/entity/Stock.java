@@ -1,6 +1,8 @@
 package com.payconiq.stockmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +27,8 @@ public class Stock extends Auditable<String> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="FK_STOCK_ID",referencedColumnName = "id")
+    @JsonIgnoreProperties("stockPriceHistoryList")
+    @JsonManagedReference
     private List<StockPriceHistory> stockPriceHistoryList;
 
     @Version

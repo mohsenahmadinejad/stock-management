@@ -15,7 +15,7 @@ public interface StockService {
     Page<Stock> getAllStocksWithPagination(int pageNumber , int pageSize);
     Stock addStock(ReqStockDto stockDto);
     ResStockDto updateStockPrice(Long id ,ReqStockDto reqStockDto);
-    void deleteBoard(Long id);
+    void deleteStockByID(Long id);
 
     Stock getStockByName(String name);
 }

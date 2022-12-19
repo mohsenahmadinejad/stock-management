@@ -73,7 +73,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public void deleteBoard(Long id) {
+    public void deleteStockByID(Long id) {
         log.info("Stock by id: {} deleted...",id);
         stockRepository.deleteById(id);
     }

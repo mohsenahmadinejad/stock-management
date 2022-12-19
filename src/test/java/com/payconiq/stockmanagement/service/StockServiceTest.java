@@ -21,7 +21,6 @@ import org.springframework.data.domain.Sort;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatcher.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class StockServiceTest {
@@ -49,9 +49,21 @@ class StockServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
+
+    private Stock stock1;
+
+    @BeforeEach
+    void setUp(){
+        stock1=Stock.builder().
+                name("Stock1").
+                currentPrice(new BigDecimal(101)).
+                build();
+
+    }
+
     @Test
     void whenAddNewStock_thenReturnNewStock(){
-         Stock  stock1= Stock.builder().
+         stock1= Stock.builder().
                  name("Stock1").
                  currentPrice(new BigDecimal(101)).
                  build();
@@ -69,7 +81,7 @@ class StockServiceTest {
  }
     @Test
     void getStockById(){
-        Stock  stock1= Stock.builder().
+        stock1= Stock.builder().
                 id(1L).
                 name("Stock1").
                 currentPrice(new BigDecimal(101)).
@@ -84,13 +96,6 @@ class StockServiceTest {
 
     @Test
     void getStockByIdWithException(){
-        Stock  stock1= Stock.builder().
-                id(1L).
-                name("Stock1").
-                currentPrice(new BigDecimal(101)).
-                build();
-        when(stockRepository.findById(1L)).thenReturn(Optional.of(stock1));
-
         assertThrows(StockNotFoundException.class,()->{
             stockService.getStockById(2L);
         });
@@ -98,7 +103,7 @@ class StockServiceTest {
 
     @Test
     void updateStockPrice(){
-         Stock  stock1= Stock.builder().
+         stock1= Stock.builder().
                  id(1L).
                  name("Stock1").
                  currentPrice(new BigDecimal(101)).
@@ -128,6 +133,20 @@ class StockServiceTest {
          assertEquals(resStockDto.getCurrentPrice(),new BigDecimal(200));
 
  }
+
+    @Test
+    void deleteStock(){
+        stock1= Stock.builder().
+                id(1L).
+                name("Stock1").
+                currentPrice(new BigDecimal(101)).
+                build();
+        doNothing().when(stockRepository).deleteById(anyLong());
+
+        stockService.deleteStockByID(1L);
+        verify(stockRepository, times(1)).deleteById(1L);
+
+    }
 
 
 }

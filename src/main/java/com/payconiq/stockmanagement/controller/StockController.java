@@ -24,12 +24,12 @@ public class StockController {
     public ResponseEntity<Stock> getStockById(@PathVariable Long id) {
         return ResponseEntity.ok(stockService.getStockById(id));
     }
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Stock> getStockByName(@PathVariable String name) {
         return ResponseEntity.ok(stockService.getStockByName(name));
     }
     @GetMapping("/pagination/{pageNumber}/{pageSize}")
-    public ResponseEntity<Page<Stock>> getAllBoards(@PathVariable int pageNumber,
+    public ResponseEntity<Page<Stock>> getAllStocks(@PathVariable int pageNumber,
                                                     @PathVariable int pageSize) {
         return ResponseEntity.ok(stockService.getAllStocksWithPagination(pageNumber,pageSize));
     }
@@ -49,7 +49,7 @@ public class StockController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteStock(@PathVariable Long id) {
-        stockService.deleteBoard(id);
+        stockService.deleteStockByID(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

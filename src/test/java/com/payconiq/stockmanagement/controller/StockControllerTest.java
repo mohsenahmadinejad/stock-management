@@ -14,6 +14,7 @@ import com.payconiq.stockmanagement.dto.ResStockDto;
 import com.payconiq.stockmanagement.entity.Stock;
 import com.payconiq.stockmanagement.service.StockService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -49,7 +50,7 @@ class StockControllerTest {
     }
 
     @Test
-    void addStock() throws Exception {
+    void whenAddStock_thenReturnSavedStock() throws Exception {
         stock1= Stock.builder().
                 id(1L).
                 name("Stock1").
@@ -66,6 +67,7 @@ class StockControllerTest {
     }
 
     @Test
+    @DisplayName("By pass stockId should return the saved stock")
     void getStockById() throws Exception {
         stock1= Stock.builder().
                 id(1L).
@@ -80,13 +82,15 @@ class StockControllerTest {
     }
 
     @Test
-    void deleteStock() throws Exception {
+    @DisplayName("By pass stockId should delete the saved stock")
+    void deleteStockById() throws Exception {
 
         doNothing().when(stockService).deleteStockByID(anyLong());
         mockMvc.perform(delete("/api/stock/{id}",1L))
                 .andExpect(status().isNoContent());
     }
     @Test
+    @DisplayName("By pass stockId and stockPrice should return the updated stock with new price")
     void updateStockPrice() throws Exception {
 
         ReqStockDto reqStockDto=new ReqStockDto("Stock1",new BigDecimal(200));

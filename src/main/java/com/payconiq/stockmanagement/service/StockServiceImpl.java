@@ -6,6 +6,7 @@ import com.payconiq.stockmanagement.dto.ReqStockDto;
 import com.payconiq.stockmanagement.dto.ResStockDto;
 import com.payconiq.stockmanagement.entity.Stock;
 import com.payconiq.stockmanagement.entity.StockPriceHistory;
+import com.payconiq.stockmanagement.exception.NotPositiveAmountException;
 import com.payconiq.stockmanagement.exception.StockNotFoundException;
 import com.payconiq.stockmanagement.repository.StockPriceHistoryRepository;
 import com.payconiq.stockmanagement.repository.StockRepository;
@@ -57,6 +58,9 @@ public class StockServiceImpl implements StockService {
     @Override
     public ResStockDto updateStockPrice(Long id ,ReqStockDto reqStockDto) {
 
+        if(reqStockDto.getCurrentPrice().intValue()<0){
+            throw new NotPositiveAmountException("Not positive amount");
+        }
         Stock savedStock =stockRepository.findById(id)
                 .orElseThrow(()->new StockNotFoundException(
                         String.format("Can not find Stock by id %s",reqStockDto.getId())
@@ -80,7 +84,11 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Stock getStockByName(String name) {
-        return stockRepository.findByName(name);
+        Stock stock=stockRepository.findByName(name);
+        if (stock== null){
+            throw new StockNotFoundException(String.format("Can not find Stock by name %s",name));
+        }
+        return stock;
     }
 
 

@@ -8,6 +8,7 @@ import com.payconiq.stockmanagement.exception.StockNotFoundException;
 import com.payconiq.stockmanagement.repository.StockPriceHistoryRepository;
 import com.payconiq.stockmanagement.repository.StockRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -80,6 +81,7 @@ class StockServiceTest {
 
  }
     @Test
+    @DisplayName("By pass stockId should return the saved stock")
     void getStockById(){
         stock1= Stock.builder().
                 id(1L).
@@ -95,6 +97,7 @@ class StockServiceTest {
 
 
     @Test
+    @DisplayName("By pass stockId that is not in database should return 'StockNotFoundException' ")
     void getStockByIdWithException(){
         assertThrows(StockNotFoundException.class,()->{
             stockService.getStockById(2L);
@@ -102,6 +105,7 @@ class StockServiceTest {
     }
 
     @Test
+    @DisplayName("By pass stockId and stockPrice should return the updated stock with new price")
     void updateStockPrice(){
          stock1= Stock.builder().
                  id(1L).
@@ -135,6 +139,7 @@ class StockServiceTest {
  }
 
     @Test
+    @DisplayName("By pass stockId should delete the saved stock")
     void deleteStock(){
         stock1= Stock.builder().
                 id(1L).

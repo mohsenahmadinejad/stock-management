@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -21,8 +22,9 @@ public class Stock extends Auditable<String> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
     private String name;
+
+    @Positive
     private BigDecimal currentPrice;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

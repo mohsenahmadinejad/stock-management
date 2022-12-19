@@ -1,14 +1,23 @@
-
-
 spring:
   profiles:
-    active : dev
+    active : dev-localdb
 ---
 spring:
-  profiles: dev
+  profiles: dev-localdb
   datasource:
     username: root
     url: jdbc:mysql://localhost:3306/stock-management-dev
+    password:
+  jpa:
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: update
+---
+spring:
+  profiles: dev-dockerdb
+  datasource:
+    username: root
+    url: jdbc:mysql://mysqldb:3306/stock-management-dev
     password:
   jpa:
     show-sql: 'true'
@@ -25,7 +34,3 @@ spring:
     show-sql: 'false'
     hibernate:
       ddl-auto: none
-
-
-
-
